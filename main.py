@@ -61,7 +61,7 @@ def main():
         game_over = False
 
         gap = get_gap(score)
-        pipes = [Pipe(SCREEN_WIDTH + i * (70 + gap), gap, asset_manager) for i in range(3)]
+        pipes = [Pipe(SCREEN_WIDTH + i * (70 + gap), gap, asset_manager, score) for i in range(3)]
 
         menu = Menu(screen, font)
         if initial_start:
@@ -93,14 +93,14 @@ def main():
                     pipes.remove(pipe)
                     score += 1
                     gap = get_gap(score)
-                    pipes.append(Pipe(SCREEN_WIDTH, gap, asset_manager))
+                    pipes.append(Pipe(SCREEN_WIDTH, gap, asset_manager, score))
 
                 if bird.rect.colliderect(pipe.top_rect) or bird.rect.colliderect(pipe.bottom_rect):
                     game_over = True
 
             if bird.rect.top > SCREEN_HEIGHT:
                 game_over = True
-                
+
             current_speed = get_speed(score)
             for pipe in pipes:
                 pipe.speed = current_speed
