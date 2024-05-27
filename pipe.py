@@ -9,10 +9,11 @@ MAX_PIPE_HEIGHT = 600 - GAP - MIN_PIPE_HEIGHT
 PIPE_SPEED = 5
 
 class Pipe:
-    def __init__(self, x):
+    def __init__(self, x, gap):
         self.x = x
         self.height = random.randint(MIN_PIPE_HEIGHT, MAX_PIPE_HEIGHT)
         self.speed = PIPE_SPEED
+        self.gap = gap
         
         self.bottom_image = pygame.image.load('images/r.png')
         self.top_image = pygame.image.load('images/r.png')
@@ -22,7 +23,7 @@ class Pipe:
         self.top_image = pygame.transform.flip(self.top_image, False, True)
         
         self.top_rect = self.top_image.get_rect(midbottom=(self.x, self.height))
-        self.bottom_rect = self.bottom_image.get_rect(midtop=(self.x, self.height + GAP))
+        self.bottom_rect = self.bottom_image.get_rect(midtop=(self.x, self.height + self.gap))
 
     def update(self):
         self.x -= self.speed

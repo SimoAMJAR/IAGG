@@ -22,6 +22,16 @@ def get_speed(score):
     else:
         return 16
 
+def get_gap(score):
+    if score <= 15:
+        return 250
+    elif 16 <= score <= 40:
+        return 240
+    elif 41 <= score <= 60:
+        return 230
+    else:
+        return 210
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -39,9 +49,12 @@ def main():
 
     while running:
         bird = Bird()
-        pipes = [Pipe(SCREEN_WIDTH + i * (70 + 200)) for i in range(3)]
         score = 0
         game_over = False
+
+        # Initialize pipes with the initial gap
+        gap = get_gap(score)
+        pipes = [Pipe(SCREEN_WIDTH + i * (70 + gap), gap) for i in range(3)]
 
         menu = Menu(screen, font)
         if initial_start:
@@ -71,8 +84,10 @@ def main():
                 pipe.update()
                 if pipe.off_screen():
                     pipes.remove(pipe)
-                    pipes.append(Pipe(SCREEN_WIDTH))
                     score += 1
+                    # Update gap based on the new score
+                    gap = get_gap(score)
+                    pipes.append(Pipe(SCREEN_WIDTH, gap))
 
                 if bird.rect.colliderect(pipe.top_rect) or bird.rect.colliderect(pipe.bottom_rect):
                     game_over = True
