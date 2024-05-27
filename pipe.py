@@ -1,27 +1,22 @@
 import pygame
 import random
+from asset_manager import AssetManager
 
 # Constants
 PIPE_WIDTH = 90
-GAP = 250
 MIN_PIPE_HEIGHT = 100
-MAX_PIPE_HEIGHT = 600 - GAP - MIN_PIPE_HEIGHT
-PIPE_SPEED = 5
+MAX_PIPE_HEIGHT = 600 - 250 - MIN_PIPE_HEIGHT  # Adjust as needed
 
 class Pipe:
-    def __init__(self, x, gap):
+    def __init__(self, x, gap, asset_manager):
         self.x = x
-        self.height = random.randint(MIN_PIPE_HEIGHT, MAX_PIPE_HEIGHT)
-        self.speed = PIPE_SPEED
         self.gap = gap
-        
-        self.bottom_image = pygame.image.load('images/r.png')
-        self.top_image = pygame.image.load('images/r.png')
-        
-        self.bottom_image = pygame.transform.scale(self.bottom_image, (PIPE_WIDTH, self.bottom_image.get_height()))
-        self.top_image = pygame.transform.scale(self.top_image, (PIPE_WIDTH, self.top_image.get_height()))
-        self.top_image = pygame.transform.flip(self.top_image, False, True)
-        
+        self.height = random.randint(MIN_PIPE_HEIGHT, MAX_PIPE_HEIGHT)
+        self.speed = 5
+
+        self.bottom_image = asset_manager.images['pipe']
+        self.top_image = asset_manager.images['pipe_flipped']
+
         self.top_rect = self.top_image.get_rect(midbottom=(self.x, self.height))
         self.bottom_rect = self.bottom_image.get_rect(midtop=(self.x, self.height + self.gap))
 

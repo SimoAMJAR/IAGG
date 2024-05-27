@@ -2,15 +2,13 @@ import pygame
 from bird import Bird
 from pipe import Pipe
 from menu import Menu
+from asset_manager import AssetManager
 
 # Constants
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 FPS = 30
 WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GRAVITY = 1
-FLAP_STRENGTH = -10
 
 def get_speed(score):
     if score <= 15:
@@ -32,6 +30,17 @@ def get_gap(score):
     else:
         return 210
 
+def load_high_score():
+    try:
+        with open("highscore.txt", "r") as file:
+            return int(file.read())
+    except FileNotFoundError:
+        return 0
+
+def save_high_score(score):
+    with open("highscore.txt", "w") as file:
+        file.write(str(score))
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -39,22 +48,20 @@ def main():
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 55)
 
-    # Load background image
-    background_image = pygame.image.load('images/background.jpg')
-    background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    asset_manager = AssetManager()
+    high_score = load_high_score()
 
     running = True
     game_started = False
     initial_start = True
 
     while running:
-        bird = Bird()
+        bird = Bird(asset_manager)
         score = 0
         game_over = False
 
-        # Initialize pipes with the initial gap
         gap = get_gap(score)
-        pipes = [Pipe(SCREEN_WIDTH + i * (70 + gap), gap) for i in range(3)]
+        pipes = [Pipe(SCREEN_WIDTH + i * (70 + gap), gap, asset_manager) for i in range(3)]
 
         menu = Menu(screen, font)
         if initial_start:
@@ -85,24 +92,20 @@ def main():
                 if pipe.off_screen():
                     pipes.remove(pipe)
                     score += 1
-                    # Update gap based on the new score
                     gap = get_gap(score)
-                    pipes.append(Pipe(SCREEN_WIDTH, gap))
+                    pipes.append(Pipe(SCREEN_WIDTH, gap, asset_manager))
 
                 if bird.rect.colliderect(pipe.top_rect) or bird.rect.colliderect(pipe.bottom_rect):
                     game_over = True
 
             if bird.rect.top > SCREEN_HEIGHT:
-                game_over = True  # Bird went below the screen
-
-            # Get current speed based on score
+                game_over = True
+                
             current_speed = get_speed(score)
-
-            # Update pipes' speed
             for pipe in pipes:
                 pipe.speed = current_speed
 
-            screen.blit(background_image, (0, 0))
+            screen.blit(asset_manager.images['background'], (0, 0))
             bird.draw(screen)
             for pipe in pipes:
                 pipe.draw(screen)
@@ -116,7 +119,11 @@ def main():
         if not running:
             break
 
-        menu.draw_game_over()
+        if score > high_score:
+            high_score = score
+            save_high_score(high_score)
+
+        menu.draw_game_over(score, high_score)
 
         while game_over:
             for event in pygame.event.get():
@@ -126,7 +133,7 @@ def main():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:
                         game_over = False
-                        game_started = True  # Restart directly without showing the start screen
+                        game_started = True
                     if event.key == pygame.K_q:
                         running = False
                         game_over = False

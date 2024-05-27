@@ -1,12 +1,13 @@
 import pygame
+from asset_manager import AssetManager
 
 # Constants
 GRAVITY = 1
 FLAP_STRENGTH = -10
 
 class Bird:
-    def __init__(self):
-        self.image = pygame.image.load('images/cropped_bird.png')
+    def __init__(self, asset_manager):
+        self.image = asset_manager.images['bird']
         self.rect = self.image.get_rect(center=(50, 300))
         self.velocity = 0
 
