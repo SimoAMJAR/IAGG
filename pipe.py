@@ -17,6 +17,8 @@ class Pipe:
         self.bottom_image = pygame.image.load('images/r.png')
         self.top_image = pygame.image.load('images/r.png')
         
+        self.bottom_image = pygame.transform.scale(self.bottom_image, (PIPE_WIDTH, self.bottom_image.get_height()))
+        self.top_image = pygame.transform.scale(self.top_image, (PIPE_WIDTH, self.top_image.get_height()))
         self.top_image = pygame.transform.flip(self.top_image, False, True)
         
         self.top_rect = self.top_image.get_rect(midbottom=(self.x, self.height))

@@ -1,7 +1,6 @@
 import pygame
 from bird import Bird
 from pipe import Pipe
-from ground import Ground
 from menu import Menu
 
 # Constants
@@ -18,6 +17,7 @@ def main():
     font = pygame.font.SysFont(None, 55)
 
     background_image = pygame.image.load('images/background.jpg')
+    background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
     running = True
     game_started = False
@@ -26,7 +26,6 @@ def main():
     while running:
         bird = Bird()
         pipes = [Pipe(SCREEN_WIDTH + i * (70 + 200)) for i in range(3)]
-        ground = Ground()
         score = 0
         game_over = False
 
@@ -61,17 +60,16 @@ def main():
                     pipes.append(Pipe(SCREEN_WIDTH))
                     score += 1
 
-            if bird.rect.colliderect(ground.rect):
-                game_over = True
-            for pipe in pipes:
                 if bird.rect.colliderect(pipe.top_rect) or bird.rect.colliderect(pipe.bottom_rect):
                     game_over = True
+
+            if bird.rect.top > SCREEN_HEIGHT:
+                game_over = True  # Bird went below the screen
 
             screen.blit(background_image, (0, 0))
             bird.draw(screen)
             for pipe in pipes:
                 pipe.draw(screen)
-            ground.draw(screen)
 
             score_surf = font.render(f'Score: {score}', True, WHITE)
             screen.blit(score_surf, (10, 10))
