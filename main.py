@@ -8,6 +8,19 @@ SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 FPS = 30
 WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAVITY = 1
+FLAP_STRENGTH = -10
+
+def get_speed(score):
+    if score <= 15:
+        return 5
+    elif 16 <= score <= 40:
+        return 8
+    elif 41 <= score <= 60:
+        return 12
+    else:
+        return 16
 
 def main():
     pygame.init()
@@ -16,6 +29,7 @@ def main():
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 55)
 
+    # Load background image
     background_image = pygame.image.load('images/background.jpg')
     background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
@@ -65,6 +79,13 @@ def main():
 
             if bird.rect.top > SCREEN_HEIGHT:
                 game_over = True  # Bird went below the screen
+
+            # Get current speed based on score
+            current_speed = get_speed(score)
+
+            # Update pipes' speed
+            for pipe in pipes:
+                pipe.speed = current_speed
 
             screen.blit(background_image, (0, 0))
             bird.draw(screen)
