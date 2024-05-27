@@ -8,8 +8,8 @@ class AssetManager:
     def load_assets(self):
         # Load images
         self.images['background'] = pygame.image.load('images/background.jpg')
-        self.images['bird'] = pygame.image.load('images/cropped_bird.png')
-        self.images['pipe'] = pygame.image.load('images/r.png')
+        self.images['bird'] = pygame.image.load('images/bird.png')
+        self.images['pipe'] = pygame.image.load('images/pipe.png')
 
         # Scale images as needed
         self.images['background'] = pygame.transform.scale(self.images['background'], (400, 600))
