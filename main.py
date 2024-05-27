@@ -65,7 +65,7 @@ def main():
 
         menu = Menu(screen, font)
         if initial_start:
-            menu.draw_start()
+            menu.draw_start(asset_manager.images['background'])
 
         while not game_started:
             for event in pygame.event.get():

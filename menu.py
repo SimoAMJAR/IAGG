@@ -2,6 +2,8 @@ import pygame
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+SCREEN_WIDTH = 400
+SCREEN_HEIGHT = 600
 
 class Menu:
     def __init__(self, screen, font):
@@ -32,9 +34,27 @@ class Menu:
 
         pygame.display.flip()
 
-    def draw_start(self):
-        self.screen.fill(BLACK)
-        start_text = self.font.render('Press Space to Start', True, WHITE)
-        start_rect = start_text.get_rect(center=(200, 300))
-        self.screen.blit(start_text, start_rect)
+    def draw_start(self, background_image):
+        background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.screen.blit(background_image, (0, 0))
+
+        # Define the pixelated font and size
+        start_font = pygame.font.Font('PressStart2P-Regular.ttf', 18)  # Replace 'PressStart2P-Regular.ttf' with your font file
+        # Render the text with neon glow effect
+        start_text = start_font.render('Press Space to Start', True, (255, 255, 255))  # White color
+        text_rect = start_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+
+        # Render the text with neon glow effect
+        text_outline = start_font.render('Press Space to Start', True, (0, 0, 0))  # Black outline
+        text_outline.set_alpha(100)  # Set transparency for the outline
+
+        # Blit the text with outline to create a neon glow effect
+        self.screen.blit(text_outline, text_rect.move(2, 2))  # Offset for the glow effect
+        self.screen.blit(text_outline, text_rect.move(-2, -2))  # Offset for the glow effect
+        self.screen.blit(text_outline, text_rect.move(2, -2))  # Offset for the glow effect
+        self.screen.blit(text_outline, text_rect.move(-2, 2))  # Offset for the glow effect
+
+        # Finally, render the actual text
+        self.screen.blit(start_text, text_rect)
+
         pygame.display.flip()
