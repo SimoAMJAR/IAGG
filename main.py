@@ -41,32 +41,10 @@ def save_high_score(score):
     with open("highscore.txt", "w") as file:
         file.write(str(score))
 
-def countdown(screen, font, bird, pipes, background):
-    for i in range(3, 0, -1):
-        screen.blit(background, (0, 0))  # Draw the background
-        bird.draw(screen)  # Draw the bird
-        for pipe in pipes:
-            pipe.draw(screen)  # Draw the pipes
-
-        countdown_text = font.render(str(i), True, WHITE)
-        text_rect = countdown_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
-        screen.blit(countdown_text, text_rect)
-        pygame.display.flip()
-        pygame.time.delay(1000)  # Delay for 1 second
-
-def draw_pause_message(screen, font, background, bird, pipes):
-    screen.blit(background, (0, 0))  # Draw the background
-    bird.draw(screen)  # Draw the bird
-    for pipe in pipes:
-        pipe.draw(screen)  # Draw the pipes
-
-    pause_text = font.render("Pause", True, WHITE)
-    text_rect = pause_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
-    screen.blit(pause_text, text_rect)
-    pygame.display.flip()
-
 def main():
     pygame.init()
+    pygame.mixer.init()
+    pygame.mixer.music.load('sounds/background.mp3')
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Flappy Bird with Rectangles")
     clock = pygame.time.Clock()
@@ -103,6 +81,7 @@ def main():
                     if event.key == pygame.K_SPACE:
                         game_started = True
                         initial_start = False
+                        pygame.mixer.music.play(-1)  # Start playing the background music
 
         while not game_over and running:
             for event in pygame.event.get():
@@ -132,9 +111,11 @@ def main():
 
                     if bird.rect.colliderect(pipe.top_rect) or bird.rect.colliderect(pipe.bottom_rect):
                         game_over = True
+                        pygame.mixer.music.stop()  # Stop playing the background music
 
                 if bird.rect.top > SCREEN_HEIGHT:
                     game_over = True
+                    pygame.mixer.music.stop()  # Stop playing the background music
 
                 current_speed = get_speed(score)
                 for pipe in pipes:
@@ -147,7 +128,6 @@ def main():
 
                 # Render the score using the pixelated font
                 menu.draw_score(score)
-
 
                 pygame.display.flip()
                 clock.tick(FPS)
@@ -170,6 +150,7 @@ def main():
                     if event.key == pygame.K_r:
                         game_over = False
                         game_started = True
+                        pygame.mixer.music.play(-1)  # Start playing the background music again
                     if event.key == pygame.K_q:
                         running = False
                         game_over = False
