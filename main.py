@@ -45,10 +45,11 @@ def main():
     pygame.init()
     pygame.mixer.init()
     pygame.mixer.music.load('sounds/background.mp3')
+    start_game_over_sound = pygame.mixer.Sound('sounds/start_game_over.mp3')
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Flappy Bird with Rectangles")
     clock = pygame.time.Clock()
-    
+
     # Load fonts
     pixel_font = pygame.font.Font('PressStart2P-Regular.ttf', 18)  # Load the pixelated font
 
@@ -71,6 +72,7 @@ def main():
         menu = Menu(screen, pixel_font)  # Use the pixelated font for the menu
         if initial_start:
             menu.draw_start(asset_manager.images['background'])
+            start_game_over_sound.play()  # Play the start game over sound
 
         while not game_started:
             for event in pygame.event.get():
@@ -82,6 +84,7 @@ def main():
                         game_started = True
                         initial_start = False
                         pygame.mixer.music.play(-1)  # Start playing the background music
+                        start_game_over_sound.stop()  # Stop playing the start game over sound
 
         while not game_over and running:
             for event in pygame.event.get():
@@ -112,10 +115,12 @@ def main():
                     if bird.rect.colliderect(pipe.top_rect) or bird.rect.colliderect(pipe.bottom_rect):
                         game_over = True
                         pygame.mixer.music.stop()  # Stop playing the background music
+                        start_game_over_sound.play()  # Play the start game over sound
 
                 if bird.rect.top > SCREEN_HEIGHT:
                     game_over = True
                     pygame.mixer.music.stop()  # Stop playing the background music
+                    start_game_over_sound.play()  # Play the start game over sound
 
                 current_speed = get_speed(score)
                 for pipe in pipes:
@@ -151,6 +156,7 @@ def main():
                         game_over = False
                         game_started = True
                         pygame.mixer.music.play(-1)  # Start playing the background music again
+                        start_game_over_sound.stop()  # Stop playing the start game over sound
                     if event.key == pygame.K_q:
                         running = False
                         game_over = False
