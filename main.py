@@ -45,7 +45,10 @@ def main():
     pygame.init()
     pygame.mixer.init()
     pygame.mixer.music.load('sounds/background.mp3')
+    pygame.mixer.music.set_volume(0.5)  # Set background music volume to 50%
     start_game_over_sound = pygame.mixer.Sound('sounds/start_game_over.mp3')
+    start_game_over_sound.set_volume(0.5)  # Set volume to 50%
+    game_over_sound = pygame.mixer.Sound('sounds/game_over.mp3')  # Load game over sound
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Flappy Bird with Rectangles")
     clock = pygame.time.Clock()
@@ -116,11 +119,13 @@ def main():
                         game_over = True
                         pygame.mixer.music.stop()  # Stop playing the background music
                         start_game_over_sound.play()  # Play the start game over sound
+                        game_over_sound.play()  # Play the game over sound
 
                 if bird.rect.top > SCREEN_HEIGHT:
                     game_over = True
                     pygame.mixer.music.stop()  # Stop playing the background music
                     start_game_over_sound.play()  # Play the start game over sound
+                    game_over_sound.play()  # Play the game over sound
 
                 current_speed = get_speed(score)
                 for pipe in pipes:
@@ -157,6 +162,7 @@ def main():
                         game_started = True
                         pygame.mixer.music.play(-1)  # Start playing the background music again
                         start_game_over_sound.stop()  # Stop playing the start game over sound
+                        game_over_sound.stop()  # Stop playing the game over sound
                     if event.key == pygame.K_q:
                         running = False
                         game_over = False
