@@ -10,27 +10,46 @@ class Menu:
         self.screen = screen
         self.font = font
 
-    def draw_game_over(self, score, high_score):
-        self.screen.fill(BLACK)
-        text = self.font.render('Game Over', True, WHITE)
-        text_rect = text.get_rect(center=(200, 150))
-        self.screen.blit(text, text_rect)
+    def draw_game_over(self, score, high_score, background_image):
+        self.screen.blit(background_image, (0, 0))  # Draw the background image
 
-        score_text = self.font.render(f'Score: {score}', True, WHITE)
-        score_rect = score_text.get_rect(center=(200, 250))
-        self.screen.blit(score_text, score_rect)
+        # Render and apply neon glow effect to "Game Over" text
+        self.render_with_neon_glow('Game Over', (SCREEN_WIDTH // 2, 150))
 
-        high_score_text = self.font.render(f'High Score: {high_score}', True, WHITE)
-        high_score_rect = high_score_text.get_rect(center=(200, 350))
-        self.screen.blit(high_score_text, high_score_rect)
+        # Render and apply neon glow effect to "Score" text
+        score_text = f'Score: {score}'
+        self.render_with_neon_glow(score_text, (SCREEN_WIDTH // 2, 250))
 
-        restart_text = self.font.render('Press R to Restart', True, WHITE)
-        restart_rect = restart_text.get_rect(center=(200, 450))
-        self.screen.blit(restart_text, restart_rect)
+        # Render and apply neon glow effect to "High Score" text
+        high_score_text = f'High Score: {high_score}'
+        self.render_with_neon_glow(high_score_text, (SCREEN_WIDTH // 2, 350))
 
-        quit_text = self.font.render('Press Q to Quit', True, WHITE)
-        quit_rect = quit_text.get_rect(center=(200, 550))
-        self.screen.blit(quit_text, quit_rect)
+        # Render and apply neon glow effect to "Press R to Restart" text
+        self.render_with_neon_glow('Press R to Restart', (SCREEN_WIDTH // 2, 450))
+
+        # Render and apply neon glow effect to "Press Q to Quit" text
+        self.render_with_neon_glow('Press Q to Quit', (SCREEN_WIDTH // 2, 550))
+
+        pygame.display.flip()
+
+    def render_with_neon_glow(self, text, center):
+        # Render the text with neon glow effect
+        text_surface = self.font.render(text, True, (255, 255, 255))  # White color
+        text_rect = text_surface.get_rect(center=center)
+
+        # Render the text with neon glow effect
+        text_outline = self.font.render(text, True, (0, 0, 0))  # Black outline
+        text_outline.set_alpha(100)  # Set transparency for the outline
+
+        # Blit the text with outline to create a neon glow effect
+        self.screen.blit(text_outline, text_rect.move(2, 2))  # Offset for the glow effect
+        self.screen.blit(text_outline, text_rect.move(-2, -2))  # Offset for the glow effect
+        self.screen.blit(text_outline, text_rect.move(2, -2))  # Offset for the glow effect
+        self.screen.blit(text_outline, text_rect.move(-2, 2))  # Offset for the glow effect
+
+        # Finally, render the actual text
+        self.screen.blit(text_surface, text_rect)
+
 
         pygame.display.flip()
 

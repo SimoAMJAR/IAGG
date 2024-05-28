@@ -41,12 +41,38 @@ def save_high_score(score):
     with open("highscore.txt", "w") as file:
         file.write(str(score))
 
+def countdown(screen, font, bird, pipes, background):
+    for i in range(3, 0, -1):
+        screen.blit(background, (0, 0))  # Draw the background
+        bird.draw(screen)  # Draw the bird
+        for pipe in pipes:
+            pipe.draw(screen)  # Draw the pipes
+
+        countdown_text = font.render(str(i), True, WHITE)
+        text_rect = countdown_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        screen.blit(countdown_text, text_rect)
+        pygame.display.flip()
+        pygame.time.delay(1000)  # Delay for 1 second
+
+def draw_pause_message(screen, font, background, bird, pipes):
+    screen.blit(background, (0, 0))  # Draw the background
+    bird.draw(screen)  # Draw the bird
+    for pipe in pipes:
+        pipe.draw(screen)  # Draw the pipes
+
+    pause_text = font.render("Pause", True, WHITE)
+    text_rect = pause_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+    screen.blit(pause_text, text_rect)
+    pygame.display.flip()
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Flappy Bird with Rectangles")
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 55)
+    
+    # Load fonts
+    pixel_font = pygame.font.Font('PressStart2P-Regular.ttf', 18)  # Load the pixelated font
 
     asset_manager = AssetManager()
     high_score = load_high_score()
@@ -54,6 +80,7 @@ def main():
     running = True
     game_started = False
     initial_start = True
+    paused = False
 
     while running:
         bird = Bird(asset_manager)
@@ -63,7 +90,7 @@ def main():
         gap = get_gap(score)
         pipes = [Pipe(SCREEN_WIDTH + i * (70 + gap), gap, asset_manager, score) for i in range(3)]
 
-        menu = Menu(screen, font)
+        menu = Menu(screen, pixel_font)  # Use the pixelated font for the menu
         if initial_start:
             menu.draw_start(asset_manager.images['background'])
 
@@ -85,36 +112,45 @@ def main():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         bird.flap()
+                    elif event.key == pygame.K_ESCAPE:
+                        paused = not paused
+                        if paused:
+                            draw_pause_message(screen, pixel_font, asset_manager.images['background'], bird, pipes)
+                        else:
+                            # Countdown before resuming
+                            countdown(screen, pixel_font, bird, pipes, asset_manager.images['background'])
 
-            bird.update()
-            for pipe in pipes:
-                pipe.update()
-                if pipe.off_screen():
-                    pipes.remove(pipe)
-                    score += 1
-                    gap = get_gap(score)
-                    pipes.append(Pipe(SCREEN_WIDTH, gap, asset_manager, score))
+            if not paused:
+                bird.update()
+                for pipe in pipes:
+                    pipe.update()
+                    if pipe.off_screen():
+                        pipes.remove(pipe)
+                        score += 1
+                        gap = get_gap(score)
+                        pipes.append(Pipe(SCREEN_WIDTH, gap, asset_manager, score))
 
-                if bird.rect.colliderect(pipe.top_rect) or bird.rect.colliderect(pipe.bottom_rect):
+                    if bird.rect.colliderect(pipe.top_rect) or bird.rect.colliderect(pipe.bottom_rect):
+                        game_over = True
+
+                if bird.rect.top > SCREEN_HEIGHT:
                     game_over = True
 
-            if bird.rect.top > SCREEN_HEIGHT:
-                game_over = True
+                current_speed = get_speed(score)
+                for pipe in pipes:
+                    pipe.speed = current_speed
 
-            current_speed = get_speed(score)
-            for pipe in pipes:
-                pipe.speed = current_speed
+                screen.blit(asset_manager.images['background'], (0, 0))
+                bird.draw(screen)
+                for pipe in pipes:
+                    pipe.draw(screen)
 
-            screen.blit(asset_manager.images['background'], (0, 0))
-            bird.draw(screen)
-            for pipe in pipes:
-                pipe.draw(screen)
+                # Render the score using the pixelated font
+                score_surf = pixel_font.render(f'Score: {score}', True, WHITE)
+                screen.blit(score_surf, (10, 10))
 
-            score_surf = font.render(f'Score: {score}', True, WHITE)
-            screen.blit(score_surf, (10, 10))
-
-            pygame.display.flip()
-            clock.tick(FPS)
+                pygame.display.flip()
+                clock.tick(FPS)
 
         if not running:
             break
@@ -123,7 +159,7 @@ def main():
             high_score = score
             save_high_score(high_score)
 
-        menu.draw_game_over(score, high_score)
+        menu.draw_game_over(score, high_score, asset_manager.images['background'])
 
         while game_over:
             for event in pygame.event.get():
