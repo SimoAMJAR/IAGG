@@ -50,8 +50,14 @@ class Menu:
         # Finally, render the actual text
         self.screen.blit(text_surface, text_rect)
 
-
         pygame.display.flip()
+
+    def draw_score(self, score):
+        # Render the score using the pixelated font with neon glow effect
+        score_text = f'Score: {score}'
+        score_surface = self.font.render(score_text, True, (255, 255, 255))  # White color
+        score_rect = score_surface.get_rect(topleft=(75, 12))  # Position in the top left corner
+        self.render_with_neon_glow(score_text, (score_rect.x, score_rect.y))  # Apply neon glow effect
 
     def draw_start(self, background_image):
         background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))

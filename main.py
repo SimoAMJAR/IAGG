@@ -146,8 +146,8 @@ def main():
                     pipe.draw(screen)
 
                 # Render the score using the pixelated font
-                score_surf = pixel_font.render(f'Score: {score}', True, WHITE)
-                screen.blit(score_surf, (10, 10))
+                menu.draw_score(score)
+
 
                 pygame.display.flip()
                 clock.tick(FPS)
