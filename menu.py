@@ -14,7 +14,7 @@ class Menu:
         self.screen.blit(background_image, (0, 0))  # Draw the background image
 
         # Render and apply neon glow effect to "Game Over" text
-        self.render_with_neon_glow('Game Over', (SCREEN_WIDTH // 2, 150))
+        self.render_with_neon_glow('Game Over', (SCREEN_WIDTH // 2, 100))
 
         # Render and apply neon glow effect to "Score" text
         score_text = f'Score: {score}'
@@ -22,13 +22,13 @@ class Menu:
 
         # Render and apply neon glow effect to "High Score" text
         high_score_text = f'High Score: {high_score}'
-        self.render_with_neon_glow(high_score_text, (SCREEN_WIDTH // 2, 350))
+        self.render_with_neon_glow(high_score_text, (SCREEN_WIDTH // 2, 300))
 
         # Render and apply neon glow effect to "Press R to Restart" text
-        self.render_with_neon_glow('Press R to Restart', (SCREEN_WIDTH // 2, 450))
+        self.render_with_neon_glow('Restart', (SCREEN_WIDTH // 2, 540))
 
         # Render and apply neon glow effect to "Press Q to Quit" text
-        self.render_with_neon_glow('Press Q to Quit', (SCREEN_WIDTH // 2, 550))
+        self.render_with_neon_glow('Quit', (SCREEN_WIDTH // 2, 570))
 
         pygame.display.flip()
 
@@ -83,3 +83,26 @@ class Menu:
         self.screen.blit(start_text, text_rect)
 
         pygame.display.flip()
+
+    def draw_pause_message_with_neon(self, background, bird, pipes):
+        self.screen.blit(background, (0, 0))  # Draw the background
+        bird.draw(self.screen)  # Draw the bird
+        for pipe in pipes:
+            pipe.draw(self.screen)  # Draw the pipes
+
+        # Render the pause message with neon glow effect
+        self.render_with_neon_glow('Pause', (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+
+        pygame.display.flip()
+
+    def draw_countdown_with_neon(self, background, bird, pipes):
+        for i in range(3, 0, -1):
+            self.screen.blit(background, (0, 0))  # Draw the background
+            bird.draw(self.screen)  # Draw the bird
+            for pipe in pipes:
+                pipe.draw(self.screen)  # Draw the pipes
+
+            # Render the countdown text with neon glow effect
+            self.render_with_neon_glow(str(i), (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+            pygame.display.flip()
+            pygame.time.delay(1000)  # Delay for 1 second

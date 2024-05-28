@@ -115,10 +115,10 @@ def main():
                     elif event.key == pygame.K_ESCAPE:
                         paused = not paused
                         if paused:
-                            draw_pause_message(screen, pixel_font, asset_manager.images['background'], bird, pipes)
+                            menu.draw_pause_message_with_neon(asset_manager.images['background'], bird, pipes)
                         else:
-                            # Countdown before resuming
-                            countdown(screen, pixel_font, bird, pipes, asset_manager.images['background'])
+                            # Countdown before resuming with neon effect
+                            menu.draw_countdown_with_neon(asset_manager.images['background'], bird, pipes)
 
             if not paused:
                 bird.update()
