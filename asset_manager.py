@@ -11,9 +11,11 @@ class AssetManager:
         self.images['background'] = pygame.image.load('images/background1.png')
         self.images['bird'] = pygame.image.load('images/bird.png').convert_alpha()
         self.images['pipe'] = pygame.image.load('images/pipe1.png').convert_alpha()
+        self.images['flying'] = pygame.image.load('images/flying.png').convert_alpha()  # Load the flying bird image
 
         # Create masks for collision detection
         self.masks['bird'] = pygame.mask.from_surface(self.images['bird'])
+        self.masks['flying'] = pygame.mask.from_surface(self.images['flying'])
         self.masks['pipe'] = pygame.mask.from_surface(self.images['pipe'])
 
         # Scale images as needed
