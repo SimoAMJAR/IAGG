@@ -10,8 +10,9 @@ class Bird:
         self.image = asset_manager.images['bird']
         self.rect = self.image.get_rect(center=(50, 300))
         self.velocity = 0
+        self.mask = pygame.mask.from_surface(self.image)
         self.jump_sound = pygame.mixer.Sound('sounds/jump.mp3')
-        self.jump_sound.set_volume(0.15)  # Set volume to 50%
+        self.jump_sound.set_volume(0.15)  # Set volume to 15%
 
     def flap(self):
         self.velocity = FLAP_STRENGTH

@@ -115,7 +115,8 @@ def main():
                         gap = get_gap(score)
                         pipes.append(Pipe(SCREEN_WIDTH, gap, asset_manager, score))
 
-                    if bird.rect.colliderect(pipe.top_rect) or bird.rect.colliderect(pipe.bottom_rect):
+                    # Check for pixel-perfect collision using the get_collision method
+                    if pipe.get_collision(bird):
                         game_over = True
                         pygame.mixer.music.stop()  # Stop playing the background music
                         start_game_over_sound.play()  # Play the start game over sound

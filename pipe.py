@@ -23,6 +23,9 @@ class Pipe:
         self.top_rect = self.top_image.get_rect(midbottom=(self.x, self.height))
         self.bottom_rect = self.bottom_image.get_rect(midtop=(self.x, self.height + self.gap))
 
+        self.top_mask = pygame.mask.from_surface(self.top_image)
+        self.bottom_mask = pygame.mask.from_surface(self.bottom_image)
+
     def update(self):
         self.x -= self.speed
         self.top_rect.x = self.x
@@ -41,3 +44,14 @@ class Pipe:
 
     def off_screen(self):
         return self.x < -PIPE_WIDTH
+
+    def get_collision(self, bird):
+        if self.top_rect.colliderect(bird.rect):
+            offset = (bird.rect.left - self.top_rect.left, bird.rect.top - self.top_rect.top)
+            if self.top_mask.overlap(bird.mask, offset):
+                return True
+        if self.bottom_rect.colliderect(bird.rect):
+            offset = (bird.rect.left - self.bottom_rect.left, bird.rect.top - self.bottom_rect.top)
+            if self.bottom_mask.overlap(bird.mask, offset):
+                return True
+        return False
