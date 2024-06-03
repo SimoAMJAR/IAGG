@@ -30,6 +30,16 @@ def get_gap(score):
     else:
         return 210
 
+def get_level(score):
+    if score <= 15:
+        return 1
+    elif 16 <= score <= 40:
+        return 2
+    elif 41 <= score <= 60:
+        return 3
+    else:
+        return 4
+
 def load_high_score():
     try:
         with open("highscore.txt", "r") as file:
@@ -63,6 +73,7 @@ def main():
     game_started = False
     initial_start = True
     paused = False
+    level_start_time = None  # To track the start time of level display
 
     while running:
         bird = Bird(asset_manager)
@@ -88,6 +99,9 @@ def main():
                         initial_start = False
                         pygame.mixer.music.play(-1)  # Start playing the background music
                         start_game_over_sound.stop()  # Stop playing the start game over sound
+
+        current_level = get_level(score)
+        level_start_time = pygame.time.get_ticks()  # Start the level display timer
 
         while not game_over and running:
             for event in pygame.event.get():
@@ -139,6 +153,19 @@ def main():
 
                 # Render the score using the pixelated font
                 menu.draw_score(score)
+
+                # Check if the level has changed
+                new_level = get_level(score)
+                if new_level != current_level:
+                    current_level = new_level
+                    level_start_time = pygame.time.get_ticks()
+
+                # Display the level text for 3 seconds
+                if level_start_time and pygame.time.get_ticks() - level_start_time < 3000:
+                    level_text = f'Level {current_level}'
+                    level_surface = pixel_font.render(level_text, True, WHITE)
+                    level_rect = level_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+                    screen.blit(level_surface, level_rect)
 
                 pygame.display.flip()
                 clock.tick(FPS)
