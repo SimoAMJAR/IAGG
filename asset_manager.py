@@ -8,9 +8,9 @@ class AssetManager:
 
     def load_assets(self):
         # Load images
-        self.images['background'] = pygame.image.load('images/background1.png')
+        self.images['background'] = pygame.image.load('images/background.png')
         self.images['bird'] = pygame.image.load('images/bird.png').convert_alpha()
-        self.images['pipe'] = pygame.image.load('images/pipe1.png').convert_alpha()
+        self.images['pipe'] = pygame.image.load('images/pipe.png').convert_alpha()
         self.images['flying'] = pygame.image.load('images/flying.png').convert_alpha()  # Load the flying bird image
 
         # Create masks for collision detection
