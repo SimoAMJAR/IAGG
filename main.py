@@ -17,8 +17,10 @@ def get_speed(score):
         return 8
     elif 41 <= score <= 60:
         return 12
-    else:
+    elif 61 <= score <= 100:
         return 16
+    else:
+        return 20
 
 def get_gap(score):
     if score <= 15:
@@ -27,8 +29,10 @@ def get_gap(score):
         return 240
     elif 41 <= score <= 60:
         return 230
-    else:
+    elif 61 <= score <= 100:
         return 210
+    else:
+        return 190
 
 def get_level(score):
     if score <= 15:
@@ -36,9 +40,11 @@ def get_level(score):
     elif 16 <= score <= 40:
         return 2
     elif 41 <= score <= 60:
-        return 3
-    else:
+        return 3    
+    elif 61 <= score <= 100:
         return 4
+    else:
+        return 5
 
 def load_high_score():
     try:
